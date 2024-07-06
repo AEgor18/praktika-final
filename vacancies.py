@@ -3,13 +3,23 @@ from bs4 import BeautifulSoup as bs
 import requests
 
 mydb = mysql.connector.connect(
-    host = '127.1.1.1',
+    host = 'localhost',
     user = 'root',
-    passwd = '12345',
+    passwd = '123456',
     database = 'hh_ru'
 )
 
 mycursor = mydb.cursor()
+mycursor.execute("""CREATE TABLE IF NOT EXISTS vacancies (
+                id INTEGER AUTO_INCREMENT PRIMARY KEY,
+                position VARCHAR(255),
+                company VARCHAR(255),
+                experience VARCHAR(255),
+                salary VARCHAR(255),
+                employment VARCHAR(255),
+                schedule VARCHAR(255),
+                address VARCHAR(255)
+                )""")
 mycursor.execute("ALTER TABLE vacancies AUTO_INCREMENT = 1")
 mycursor.execute("TRUNCATE TABLE vacancies")
 mydb.commit()

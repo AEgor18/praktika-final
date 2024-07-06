@@ -13,14 +13,21 @@ headers = {
 }
 
 mydb = mysql.connector.connect(
-    host = '127.1.1.1',
+    host = 'localhost',
     user = 'root',
-    passwd = '12345',
+    passwd = '123456',
     database = 'hh_ru'
 )
 
 mycursor = mydb.cursor()
-
+mycursor.execute("""CREATE TABLE IF NOT EXISTS resume (
+                id INTEGER AUTO_INCREMENT PRIMARY KEY,
+                position VARCHAR(255),
+                experience VARCHAR(255),
+                salary INTEGER,
+                currency VARCHAR(255),
+                last_job VARCHAR(255)
+                )""")
 mycursor.execute("ALTER TABLE resume AUTO_INCREMENT = 1")
 mycursor.execute("TRUNCATE TABLE resume")
 mydb.commit()
