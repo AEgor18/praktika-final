@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практика</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vacancies.css') }}">
+</head>
+<body>
+    <form method="POST">
+        <div class="forma">
+            <div>
+                <div>
+                    <p class="filter-title">Фильтры:</p>
+                </div>
+                <div class="filters">
+                    <div class="filter">
+                        <p class="title-p">Тип занятости</p>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="employment" value="Полная занятость" id="full_employment">
+                        <label for="full_employment"><p class="filter-p">Полная занятость</p></label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="employment" value="Частичная занятость" id="part_employment">
+                        <label for="part_employment"><p class="filter-p">Частичная занятость</p></label>
+                    </div>
+                    <div class="filter">
+                        <p class="title-p">График</p>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="schedule" value="полный день" id="full_day" class="schedule-checkbox">
+                        <label for="full_day"><p class="filter-p">полный день</p></label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="schedule" value="гибкий график" id="flex_day" class="schedule-checkbox">
+                        <label for="flex_day"><p class="filter-p">гибкий график</p></label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="schedule" value="сменный график" id="part_day" class="schedule-checkbox">
+                        <label for="part_day"><p class="filter-p">сменный график</p></label>
+                    </div>
+                    <div class="filter">
+                        <p class="title-p">Опыт</p>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="experience" value="не требуется" id="none_experience">
+                        <label for="none_experience"><p class="filter-p"> не требуется</p></label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="experience" value="1–3 года" id="one_three_experience">
+                        <label for="one_three_experience"><p class="filter-p">1–3 года</p></label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="experience" value="3–6 лет" id="three_six_experience">
+                        <label for="three_six_experience"><p class="filter-p">3–6 лет</p></label>
+                    </div>
+                    <div class="filter">
+                        <input type="checkbox" name="experience" value="более 6 лет" id="more_six_experience">
+                        <label for="more_six_experience"><p class="filter-p">более 6 лет</p></label>
+                    </div>
+                </div>
+            </div>
+            <div class="center-block">
+                <div class="hh">
+                    <input class="hh-input" type="text" name="text" placeholder="Введите название профессии" required>
+                    <button class="hh-button" type="submit">Поиск</button>
+                </div>
+                <div class="results">
+                    <p class="results-p">Результаты по запросу:</p>
+                    <p class="results-p1">{{ text }}</p>
+                </div>
+                <div class="results1">
+                    <p class="results-p2">Найдено:</p>
+                    <p class="results-p1">{{ vacancies|length }} вакансий</p>
+                </div>
+                <div class="change">
+                    <a class="change-resume" href="{{ url_for('index') }}">Резюме</a>
+                    <a class="change-vacancies" href="{{ url_for('vacancies') }}">Вакансии</a>
+                </div>
+                 <div class="cards">
+                    {% for vacancy in vacancies %}
+                    <div class="card">
+                        <p class="position">{{ vacancy[1] }}</p>
+                        <div class="line">
+                            <p class="salary">{{ vacancy[4] }}</p>
+                            <p class="experience">{{ vacancy[3] }}</p>
+                        </div>
+                        <div class="job">
+                            <p class="employment">{{ vacancy[5] }}, </p>
+                            <p class="schedule">{{ vacancy[6] }}</p>
+                        </div>
+                        <div class="company-line">
+                            <p class="company1">Компания:</p>
+                            <p class="company">{{ vacancy[2] }}</p>
+                        </div>
+                        <div class="address-line">
+                            <p class="address1">Наш адрес:</p>
+                            <p class="address">{{ vacancy[7] }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                 </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var employmentCheckboxes = document.querySelectorAll('input[name="employment"]');
+                var scheduleCheckboxes = document.querySelectorAll('input[name="schedule"]');
+                var experienceCheckboxes = document.querySelectorAll('input[name="experience"]');
+
+
+                function toggleCheckboxes(checkboxes, current, state) {
+                    checkboxes.forEach(function(checkbox) {
+                        if (checkbox !== current) {
+                            checkbox.disabled = state;
+                        }
+                    });
+                }
+
+
+                employmentCheckboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        if (this.id === 'full_employment' && this.checked) {
+                            document.getElementById('part_employment').disabled = true;
+                        } else if (this.id === 'part_employment' && this.checked) {
+                            document.getElementById('full_employment').disabled = true;
+                        } else {
+                            toggleCheckboxes(employmentCheckboxes, this, false);
+                        }
+                    });
+                });
+
+                scheduleCheckboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        toggleCheckboxes(scheduleCheckboxes, this, this.checked);
+                    });
+                });
+
+                experienceCheckboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        toggleCheckboxes(experienceCheckboxes, this, this.checked);
+                    });
+                });
+            });
+        </script>
+    </form>
+</body>
+</html>

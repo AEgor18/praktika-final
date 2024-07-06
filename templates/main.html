@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практика</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <h1>Приложение для парсинга вакансий и резюме с сайта hh.ru</h1>
+    <div class="hh">
+        <form action="/process" method="post">
+            <input class="hh-input" type="text" name="text" placeholder="Введите название профессии" required>
+            <button class="hh-button" type="submit">Поиск</button>
+        </form>
+    </div>
+</body>
+</html>
