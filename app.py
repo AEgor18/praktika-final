@@ -14,9 +14,9 @@ headers = {
 }
 
 mydb = mysql.connector.connect(
-    host='127.1.1.1',
+    host='localhost',
     user='root',
-    passwd='12345',
+    passwd='123456',
     database='hh_ru'
 )
 
