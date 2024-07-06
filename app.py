@@ -2,6 +2,8 @@ from flask import Flask, render_template, request,  url_for, redirect
 import mysql.connector
 from bs4 import BeautifulSoup as bs
 import requests
+import time
+import os 
 
 app = Flask(__name__)
 
@@ -13,13 +15,49 @@ headers = {
     'Accept-Encoding': 'gzip, deflate, br'
 }
 
-mydb = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    passwd='123456',
-    database='hh_ru'
-)
+DATABASE_HOST = os.getenv('DATABASE_HOST', 'db')
+DATABASE_USER = os.getenv('DATABASE_USER', 'root')
+DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD', '123456')
+DATABASE_NAME = os.getenv('DATABASE_NAME', 'hh_ru')
 
+
+retries = 5
+while retries > 0:
+    try:
+        mydb = mysql.connector.connect(
+            host=DATABASE_HOST,
+            user=DATABASE_USER,
+            passwd=DATABASE_PASSWORD,
+            database=DATABASE_NAME
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute(mycursor.execute("""CREATE TABLE IF NOT EXISTS resume (
+                 id INTEGER AUTO_INCREMENT PRIMARY KEY,
+                 position VARCHAR(255),
+                 experience VARCHAR(255),
+                 salary INTEGER,
+                 currency VARCHAR(255),
+                 last_job VARCHAR(255)
+                 )"""))
+        mycursor.execute(mycursor.execute("""CREATE TABLE IF NOT EXISTS vacancies (
+                id INTEGER AUTO_INCREMENT PRIMARY KEY,
+                position VARCHAR(255),
+                company VARCHAR(255),
+                experience VARCHAR(255),
+                salary VARCHAR(255),
+                employment VARCHAR(255),
+                schedule VARCHAR(255),
+                address VARCHAR(255)
+                )"""))
+
+        break
+    except mysql.connector.Error as err:
+        app.logger.error(f"Error: {err}")
+        retries -= 1
+        time.sleep(5)  # Задержка 5 секунд перед повторной попыткой
+
+if retries == 0:
+    raise RuntimeError("Failed to connect to the database after several attempts")
 
 mycursor = mydb.cursor()
 mycursor.execute("TRUNCATE TABLE vacancies")
