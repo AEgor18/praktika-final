@@ -54,7 +54,7 @@ while retries > 0:
     except mysql.connector.Error as err:
         app.logger.error(f"Error: {err}")
         retries -= 1
-        time.sleep(5)  # Задержка 5 секунд перед повторной попыткой
+        time.sleep(5)
 
 if retries == 0:
     raise RuntimeError("Failed to connect to the database after several attempts")
